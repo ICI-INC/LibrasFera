@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carregando...</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.pulse-text {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+</style>
+</head>
+<body class="gradient-bg">
+  <div class="min-h-screen w-full flex items-center justify-center p-4">
+    <div class="glass rounded-3xl shadow-2xl p-8 sm:p-12 max-w-md w-full fade-in">
+      <div class="flex flex-col items-center justify-center space-y-8">
+        <!-- Spinner -->
+        <div class="relative w-20 h-20 sm:w-24 sm:h-24">
+          <div class="absolute inset-0 rounded-full border-4 border-white/20"></div>
+          <div class="spinner absolute inset-0 rounded-full border-4 border-transparent border-t-white border-r-white"></div>
+        </div>
+        
+        <!-- Text Content -->
+        <div class="text-center space-y-3">
+          <h1 class="text-3xl sm:text-4xl font-bold text-white pulse-text">
+            Carregando...
+          </h1>
+          <p class="text-white/80 text-sm sm:text-base" id="countdown-text">
+            Redirecionando em 5s...
+          </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+          <div id="progress-bar" class="h-full bg-white rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+        </div>
+
+        <!-- Info Text -->
+        <p class="text-white/60 text-xs text-center mt-4">
+          Você será redirecionado automaticamente.<br>
+          Se não funcionar, <button id="manual-link" class="text-white underline hover:text-white/80 transition-colors">clique aqui</button>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================================
+    // CONFIGURAÇÃO - EDITE AQUI
+    // ================================
+    const DESTINATION_URL = 'https://5225404fbac70c.lhr.life/LibrasFera/api/login.html'; // Altere para sua URL de destino
+    const REDIRECT_DELAY = 5000; // Tempo em milissegundos (5000ms = 5s)
+    
+    // ================================
+    // LÓGICA DE REDIRECIONAMENTO
+    // ================================
+    const countdownText = document.getElementById('countdown-text');
+    const progressBar = document.getElementById('progress-bar');
+    const manualLink = document.getElementById('manual-link');
+    
+    let secondsLeft = REDIRECT_DELAY / 1000;
+    let redirectAttempted = false;
+    
+    // Atualiza o link manual
+    manualLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      openDestination();
+    });
+    
+    // Função para abrir o destino
+    function openDestination() {
+      if (redirectAttempted) return;
+      redirectAttempted = true;
+      
+      // Tenta abrir em nova aba
+      const newWindow = window.open(DESTINATION_URL, '_blank');
+      
+      // Fallback se o popup for bloqueado
+      if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+        countdownText.textContent = 'Popup bloqueado. Redirecionando nesta aba...';
+        setTimeout(() => {
+          window.location.href = DESTINATION_URL;
+        }, 1000);
+      } else {
+        countdownText.textContent = 'Redirecionamento concluído!';
+      }
+    }
+    
+    // Atualiza a barra de progresso suavemente
+    setTimeout(() => {
+      progressBar.style.width = '100%';
+    }, 100);
+    
+    // Atualiza o contador a cada segundo
+    const countdownInterval = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft > 0) {
+        countdownText.textContent = `Redirecionando em ${secondsLeft}s...`;
+      } else {
+        countdownText.textContent = 'Redirecionando agora...';
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+    
+    // Executa o redirecionamento após o delay
+    setTimeout(() => {
+      openDestination();
+    }, REDIRECT_DELAY);
+  </script>
+</body>
+</html>
