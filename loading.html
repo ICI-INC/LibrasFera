@@ -3,46 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carregando...</title>
+<title>Carregando LibrasFera...</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.spinner {
-  animation: spin 1s linear infinite;
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.pulse-text {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
+.spinner { animation: spin 1s linear infinite; }
+.fade-in { animation: fadeIn 0.6s ease-out forwards; }
+.pulse-text { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 .glass {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -53,7 +32,7 @@
 <body class="gradient-bg">
   <div class="min-h-screen w-full flex items-center justify-center p-4">
     <div class="glass rounded-3xl shadow-2xl p-8 sm:p-12 max-w-md w-full fade-in">
-      <div class="flex flex-col items-center justify-center space-y-8">
+      <div class="flex flex-col items-center justify-center space-y-6">
         <!-- Spinner -->
         <div class="relative w-20 h-20 sm:w-24 sm:h-24">
           <div class="absolute inset-0 rounded-full border-4 border-white/20"></div>
@@ -75,8 +54,32 @@
           <div id="progress-bar" class="h-full bg-white rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
         </div>
 
+        <!-- Descrição + Botão Copiar Link Separado -->
+        <div class="w-full space-y-3 pt-2">
+          <p class="text-white/80 text-sm text-center">
+            Ajude a LibrasFera crescer compartilhando com seus amigos. Acesso gratuito!
+          </p>
+          
+          <div class="flex gap-2">
+            <input 
+              id="copy-input" 
+              type="text" 
+              readonly 
+              value="https://LINK-PARA-COMPARTILHAR.com"
+              class="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/40"
+            >
+            <button 
+              id="copy-btn"
+              class="bg-white text-purple-700 font-semibold px-4 py-2 rounded-lg hover:bg-white/90 active:scale-95 transition-all text-sm whitespace-nowrap"
+            >
+              Copiar
+            </button>
+          </div>
+          <p id="copy-feedback" class="text-green-300 text-xs text-center h-4"></p>
+        </div>
+
         <!-- Info Text -->
-        <p class="text-white/60 text-xs text-center mt-4">
+        <p class="text-white/60 text-xs text-center">
           Você será redirecionado automaticamente.<br>
           Se não funcionar, <button id="manual-link" class="text-white underline hover:text-white/80 transition-colors">clique aqui</button>.
         </p>
@@ -88,50 +91,65 @@
     // ================================
     // CONFIGURAÇÃO - EDITE AQUI
     // ================================
-    const DESTINATION_URL = 'https://easily-cart-itunes-royalty.trycloudflare.com/LibrasFera/api/login.html'; // Altere para sua URL de destino
-    const REDIRECT_DELAY = 5000; // Tempo em milissegundos (5000ms = 5s)
+    const AUTO_REDIRECT_URL = 'https://easily-cart-itunes-royalty.trycloudflare.com/LibrasFera/api/login.html'; // Link que abre sozinho em 5s
+    const COPY_BUTTON_URL = 'https://drive.google.com/file/d/1ZZj8Siiu6R9XOupJWAjmPW7BTwNF1_Ww/view';       // Link separado do botão copiar
+    const REDIRECT_DELAY = 5000; // 5000ms = 5s
     
     // ================================
-    // LÓGICA DE REDIRECIONAMENTO
+    // LÓGICA DE REDIRECIONAMENTO AUTO
     // ================================
     const countdownText = document.getElementById('countdown-text');
     const progressBar = document.getElementById('progress-bar');
     const manualLink = document.getElementById('manual-link');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyInput = document.getElementById('copy-input');
+    const copyFeedback = document.getElementById('copy-feedback');
     
     let secondsLeft = REDIRECT_DELAY / 1000;
     let redirectAttempted = false;
     
-    // Atualiza o link manual
-    manualLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      openDestination();
+    // Coloca o link de compartilhamento no input
+    copyInput.value = COPY_BUTTON_URL;
+    
+    // Botão Copiar - copia o LINK SEPARADO
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(COPY_BUTTON_URL);
+        copyFeedback.textContent = 'Link copiado!';
+        copyBtn.textContent = 'Copiado ✓';
+        setTimeout(() => {
+          copyFeedback.textContent = '';
+          copyBtn.textContent = 'Copiar';
+        }, 2000);
+      } catch (err) {
+        copyFeedback.textContent = 'Erro ao copiar';
+      }
     });
     
-    // Função para abrir o destino
-    function openDestination() {
+    // Link manual abre o LINK DE REDIRECIONAMENTO AUTO
+    manualLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      openAutoRedirect();
+    });
+    
+    function openAutoRedirect() {
       if (redirectAttempted) return;
       redirectAttempted = true;
-      
-      // Tenta abrir em nova aba
-      const newWindow = window.open(DESTINATION_URL, '_blank');
-      
-      // Fallback se o popup for bloqueado
+      const newWindow = window.open(AUTO_REDIRECT_URL, '_blank');
       if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
         countdownText.textContent = 'Popup bloqueado. Redirecionando nesta aba...';
         setTimeout(() => {
-          window.location.href = DESTINATION_URL;
+          window.location.href = AUTO_REDIRECT_URL;
         }, 1000);
       } else {
         countdownText.textContent = 'Redirecionamento concluído!';
       }
     }
     
-    // Atualiza a barra de progresso suavemente
     setTimeout(() => {
       progressBar.style.width = '100%';
     }, 100);
     
-    // Atualiza o contador a cada segundo
     const countdownInterval = setInterval(() => {
       secondsLeft--;
       if (secondsLeft > 0) {
@@ -142,9 +160,9 @@
       }
     }, 1000);
     
-    // Executa o redirecionamento após o delay
+    // Executa o redirecionamento automático pro LINK 1
     setTimeout(() => {
-      openDestination();
+      openAutoRedirect();
     }, REDIRECT_DELAY);
   </script>
 </body>
