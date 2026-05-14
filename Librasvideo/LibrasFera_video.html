@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibrasFera - Vídeo Institucional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 */
+            background: #000;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .descricao {
+            margin-bottom: 24px;
+        }
+
+        .descricao h2 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: #A78BFA;
+        }
+
+        .descricao p {
+            line-height: 1.7;
+            color: #d1d5db;
+            font-size: 16px;
+        }
+
+        .link-box {
+            background: #262626;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .link-text {
+            flex: 1;
+            font-family: monospace;
+            font-size: 14px;
+            color: #10B981;
+            word-break: break-all;
+            min-width: 200px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-copiar {
+            background: #374151;
+            color: #fff;
+        }
+
+        .btn-copiar:hover {
+            background: #4B5563;
+            transform: translateY(-1px);
+        }
+
+        .btn-abrir {
+            background: #7C3AED;
+            color: #fff;
+        }
+
+        .btn-abrir:hover {
+            background: #6D28D9;
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10B981;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .content { padding: 20px; }
+            .header h1 { font-size: 24px; }
+            .btn-group { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LibrasFera</h1>
+            <p>Comunicação acessível para todos</p>
+        </div>
+
+        <div class="video-wrapper">
+            <video autoplay muted playsinline loop poster="thumb.jpg">
+                <source src="video-librasfera.mp4" type="video/mp4">
+                Seu navegador não suporta vídeo HTML5.
+            </video>
+        </div>
+
+        <div class="content">
+            <div class="descricao">
+                <h2>Sobre o vídeo</h2>
+                <p>
+                   A LibrasFera é uma rede social feita por e para surdos. Aqui você se conecta, 
+                    compartilha vídeos em Libras, encontra conteúdo acessível e participa de uma 
+                    comunidade que fala a sua língua. Nosso objetivo é quebrar barreiras e criar 
+                    um espaço 100% inclusivo, onde a comunicação visual é prioridade.
+                </p>
+            </div>
+
+            <div class="link-box">
+                <span class="link-text" id="linkTexto">LibrasFera</span>
+                <div class="btn-group">
+                    <button class="btn btn-copiar" id="btnCopiar" data-link="https://drive.google.com/file/d/1ZZj8Siiu6R9XOupJWAjmPW7BTwNF1_Ww/view">
+                        📋 Copiar
+                    </button>
+                    <button class="btn btn-abrir" id="btnAbrir" data-link="https://drive.google.com/file/d/1ZZj8Siiu6R9XOupJWAjmPW7BTwNF1_Ww/view">
+                        🔗 Copiar + Abrir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Link copiado!</div>
+
+    <script>
+        const btnCopiar = document.getElementById('btnCopiar');
+        const btnAbrir = document.getElementById('btnAbrir');
+        const toast = document.getElementById('toast');
+
+        function mostrarToast(texto) {
+            toast.textContent = texto;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        btnCopiar.addEventListener('click', async () => {
+            const link = btnCopiar.getAttribute('data-link');
+            try {
+                await navigator.clipboard.writeText(link);
+                mostrarToast('Link copiado!');
+            } catch (err) {
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                mostrarToast('Link copiado!');
+            }
+        });
+
+        btnAbrir.addEventListener('click', () => {
+            const link = btnAbrir.getAttribute('data-link');
+            navigator.clipboard.writeText(link).then(() => {
+                mostrarToast('Link copiado e abrindo...');
+                setTimeout(() => {
+                    window.open(link, '_blank');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
