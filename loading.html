@@ -1,87 +1,90 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carregando...</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.spinner { animation: spin 1s linear infinite; }
-.pulse-text { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manutenção - Voltaremos em breve</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Ajustes para telas bem pequenas */
+        @media (max-width: 380px) {
+            h1 { font-size: 1.5rem; }
+            p { font-size: 1rem; }
+        }
+        
+        /* Estilo simples para o rodapé solicitado */
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+    </style>
 </head>
-<body class="gradient-bg">
-  <div class="min-h-screen w-full flex items-center justify-center p-4">
-    <div class="glass rounded-3xl shadow-2xl p-8 sm:p-12 max-w-md w-full">
-      <div class="flex flex-col items-center justify-center space-y-6">
-        
-        <!-- Spinner -->
-        <div class="relative w-20 h-20 sm:w-24 sm:h-24">
-          <div class="absolute inset-0 rounded-full border-4 border-white/20"></div>
-          <div class="spinner absolute inset-0 rounded-full border-4 border-transparent border-t-white border-r-white"></div>
-        </div>
-        
-        <div class="text-center space-y-3">
-          <h1 class="text-3xl sm:text-4xl font-bold text-white pulse-text">
-            Carregando...
-          </h1>
-          <p class="text-white/80 text-sm sm:text-base" id="countdown">
-            Aguarde 3s...
-          </p>
-        </div>
+<body>
 
-        <!-- Barra de progresso -->
-        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden">
-          <div id="progress" class="h-full bg-white rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
-        </div>
-
-      </div>
+    <div class="container">
+        <span class="icon">🛠️</span>
+        <h1>Estamos em Manutenção</h1>
+        <p>Estamos trabalhando para melhorar sua experiência. Voltaremos a estar online em breve!</p>
+        <div class="loader"></div>
+        <div class="footer">@ 2026 Sistema seguro</div>
     </div>
-  </div>
 
-  <script>
-    // TROCA ESSE LINK AQUI PELO LINK QUE VAI ABRIR DEPOIS DO LOADING
-    const LINK_DESTINO = 'https://lights-images-genealogy-bye.trycloudflare.com/ICI/storage/LibrasFera/api/login.html';
-    const TEMPO_LOADING = 3000; // 3000ms = 3 segundos
-    
-    let segundos = TEMPO_LOADING / 1000;
-    const countdown = document.getElementById('countdown');
-    const progress = document.getElementById('progress');
-    
-    // Anima a barra
-    setTimeout(() => {
-      progress.style.width = '100%';
-    }, 100);
-    
-    // Contagem regressiva
-    const intervalo = setInterval(() => {
-      segundos--;
-      if (segundos > 0) {
-        countdown.textContent = `Aguarde ${segundos}s...`;
-      } else {
-        countdown.textContent = 'Redirecionando...';
-        clearInterval(intervalo);
-      }
-    }, 1000);
-    
-    // Redireciona depois do tempo
-    setTimeout(() => {
-      window.location.href = LINK_DESTINO;
-    }, TEMPO_LOADING);
-  </script>
 </body>
 </html>
